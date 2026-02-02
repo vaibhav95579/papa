@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Papa and Di</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', 'Noto Sans Devanagari', sans-serif;
+            background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Cute Background Bubbles */
+        .background-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        /* Slideshow Container */
+        .slideshow-container {
+            width: 300px;
+            height: 400px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            background-color: white;
+            margin-bottom: 20px;
+            position: relative;
+            border: 5px solid white;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .slide.active {
+            opacity: 1;
+        }
+
+        /* Text Area */
+        .message-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 80%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hindi-text {
+            font-size: 1.5rem;
+            color: #d35400;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .sanskrit-text {
+            font-size: 1.2rem;
+            color: #8e44ad;
+            font-style: italic;
+        }
+
+        /* Button */
+        #nextBtn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transition: transform 0.2s;
+        }
+        
+        #nextBtn:hover {
+            transform: scale(1.05);
+            background-color: #ee5253;
+        }
+
+        /* Flower Rain Animation */
+        .flower {
+            position: absolute;
+            top: -50px;
+            font-size: 2rem;
+            animation: fall linear forwards;
+            z-index: 100;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-decoration">
+        <div class="bubble" style="width: 100px; height: 100px; top: 10%; left: 10%;"></div>
+        <div class="bubble" style="width: 150px; height: 150px; top: 60%; left: 80%;"></div>
+        <div class="bubble" style="width: 80px; height: 80px; top: 30%; left: 60%;"></div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="slideshow-container">
+        <img src="papa1.jpg" class="slide active" alt="Photo 1">
+        <img src="papa2.jpg" class="slide" alt="Photo 2">
+        <img src="papa3.jpg" class="slide" alt="Photo 3">
+    </div>
+
+    <div class="message-box">
+        <div id="hindi" class="hindi-text">आदरणीय पिताजी, आदरणीय बहन</div>
+        <div id="sanskrit" class="sanskrit-text">आदरणीयाः पितृमहोदयाः, आदरणीया भगिनी</div>
+    </div>
+
+    <button id="nextBtn" onclick="nextStep()">Next ➡️</button>
+
+    <script>
+        // Data for texts
+        const messages = [
+            {
+                h: "शुक्रिया कि आप ये पढ़ रहे हैं",
+                s: "धन्यवादः यत् भवन्तः इदं पठन्ति"
+            },
+            {
+                h: "मैं बोर हो रहा था",
+                s: "अहं खिन्नः आसम्"
+            },
+            {
+                h: "और पढ़-पढ़ के थक गया था",
+                s: "अतिपठनेन श्रांतः अभवम्"
+            },
+            {
+                h: "तो मैंने सोचा मेरे वेब डेव विषय से कुछ बनाऊं",
+                s: "अतः मया चिन्तितं यत् मम जाल-विकास-विषयेण किञ्चित् रचयेयम्"
+            },
+            {
+                h: "तो मैंने बस ऐसे ही ये बना दिया",
+                s: "अतः मया इदं केवलं रचितम्"
+            },
+            {
+                h: "ये लो फूल 🌸",
+                s: "इमानि पुष्पाणि स्वीकुरु"
+            }
+        ];
+
+        let step = 0;
+        const music = document.getElementById('bgMusic');
+
+        // Slideshow Logic
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function showSlides() {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slideIndex++;
+            if (slideIndex > slides.length) {slideIndex = 1}
+            slides[slideIndex - 1].classList.add('active');
+            setTimeout(showSlides, 3000); // Change image every 3 seconds
+        }
+        showSlides();
+
+        // Next Button Logic
+        function nextStep() {
+            // Try to play music on first interaction (browsers block autoplay)
+            if (step === 0 && music.paused) {
+                music.volume = 0.5;
+                music.play().catch(e => console.log("Audio play failed usually due to browser policy until interaction"));
+            }
+
+            if (step < messages.length) {
+                document.getElementById('hindi').innerText = messages[step].h;
+                document.getElementById('sanskrit').innerText = messages[step].s;
+                
+                // Check if it's the last step (Flowers)
+                if (step === messages.length - 1) {
+                    startFlowerRain();
+                    document.getElementById('nextBtn').style.display = 'none'; // Hide button at the end
+                }
+                step++;
+            }
+        }
+
+        // Raining Flowers Logic
+        function startFlowerRain() {
+            setInterval(createFlower, 300);
+        }
+
+        function createFlower() {
+            const flower = document.createElement('div');
+            flower.classList.add('flower');
+            flower.innerText = getRandomFlower();
+            flower.style.left = Math.random() * 100 + 'vw';
+            flower.style.animationDuration = Math.random() * 3 + 2 + 's'; // between 2 and 5 seconds
+            document.body.appendChild(flower);
+
+            // Remove flower after animation to keep memory clean
+            setTimeout(() => {
+                flower.remove();
+            }, 5000);
+        }
+
+        function getRandomFlower() {
+            const flowers = ['🌸', '🌹', '🌻', '🌷', '🌼', '🌺'];
+            return flowers[Math.floor(Math.random() * flowers.length)];
+        }
+    </script>
+</body>
+</html>
